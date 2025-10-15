@@ -377,8 +377,9 @@ if (form) {
       if (playerScoreInput) playerScoreInput.value = score;
     }
   });
-localStorage.removeItem('scores');
-renderScoreTable(); // momentáneo,
+  localStorage.removeItem('scores');
+  renderScoreTable(); // momentáneo,
 }
+
 
 
