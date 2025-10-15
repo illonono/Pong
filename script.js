@@ -372,10 +372,11 @@ if (form) {
       // opcional: feedback si no se guardó por ser 0
       // alert('No hay puntaje válido para guardar (debe ser > 0).');
     } else {
-      // limpiar campo nombre si quieres
+      // limpiar campo nombre 
       if (nameInput) nameInput.value = '';
       if (playerScoreInput) playerScoreInput.value = score;
     }
   });
 
 }
+
