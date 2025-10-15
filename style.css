@@ -1,0 +1,410 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #000;
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  text-align: center;
+}
+
+
+
+/* ===== HEADER ===== */
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding: 2vh 5vw;
+  border-bottom: 1px solid #fff;
+  align-items: center;
+}
+
+.header__logo {
+  width:75px;
+}
+
+.header__nav-list {
+  display: flex;
+  gap: 2vw;
+  z-index: 1000; 
+}
+
+.header__link {
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.5s ease, transform 0.5s ease;
+}
+
+.header__link:hover {
+  color: #ffff33;
+  transform: scale(1.3);
+}
+
+
+
+/* ===== HISTORY ===== */
+.history {
+  background-color: #0d1117; 
+  color: #e6edf3; 
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.history__title {
+  color: #f5ff61; 
+  font-size: 2.2rem;
+  text-shadow: 0 0 8px rgba(245, 255, 97, 0.8), 
+               0 0 20px rgba(245, 255, 97, 0.5), 
+               0 0 40px rgba(245, 255, 97, 0.2);
+  margin-bottom: 20px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.history__text {
+  max-width: 900px;
+  margin: 0 auto;
+  line-height: 1.8;
+  font-size: 1.1rem;
+  color: #e6edf3;
+  text-align: justify;
+}
+
+
+/* ===== CARRUSEL ===== */
+#pongCarousel {
+  max-width: 800px;
+  margin: 40px auto;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+}
+
+#pongCarousel img {
+  width: 100%;
+  height: auto;           /* Se adapta al alto natural */
+  object-fit: contain;    /* Evita recorte */
+  display: block;
+  background-color: #000; /* Fondo si hay espacio sobrante */
+}
+
+/* Flechas */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-image: none;
+  width: 45px;
+  height: 45px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  position: relative;
+}
+
+.carousel-control-prev-icon::after,
+.carousel-control-next-icon::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  border-top: 3px solid #fff;
+  border-right: 3px solid #fff;
+  transform: translate(-50%, -50%) rotate(135deg);
+}
+
+.carousel-control-next-icon::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  width: 10%;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+  opacity: 0.7;
+}
+
+/* Asegurar que las flechas estén encima y respondan */
+.carousel-control-prev,
+.carousel-control-next {
+  z-index: 1050;             /* por encima del .carousel-inner */
+  pointer-events: auto;      /* por si alguna regla las inhabilitó */
+}
+
+/* Asegurar que los indicadores también reciban clicks */
+.carousel-indicators {
+  z-index: 1060;
+  pointer-events: auto;
+}
+
+/* overlay global, evita que tape el carrusel */
+.header__overlay {
+  pointer-events: auto; /* overlay debe cerrarse con click, si lo colocas encima del carrusel se bloqueará; usa z-index correcto */
+}
+
+
+
+
+
+/* Indicadores */
+.carousel-indicators [data-bs-target] {
+  background-color: #e6edf3;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  opacity: 0.6;
+  transition: all 0.3s ease;
+}
+
+.carousel-indicators .active {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+/* Texto del carrusel */
+.carousel-caption h5,
+.carousel-caption p {
+  color: #E8B02C;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+  text-align: left;
+}
+
+/* Ajuste general de visibilidad */
+.carousel-control-prev,
+.carousel-control-next {
+  z-index: 5;
+}
+
+
+/* ===== GAME ===== */
+.game__score {
+  font-size: 20px;
+  margin: 10px 0;
+}
+
+.game__controls {
+  color: #ffff33;
+  font-weight: bold;
+  margin: 10px 0 20px;
+  font-size: 16px;
+  text-shadow: 0 0 5px #ffff33, 0 0 10px #ffff66, 0 0 20px #ffff99;
+  animation: jump 2.5s infinite ease-in-out;
+}
+
+/* Animación tipo arcade */
+@keyframes jump {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Contenedor del juego y la tabla */
+.game__wrapper {
+  display: flex;
+  justify-content: center;      
+  align-items: flex-start;
+  gap: 12.5px;                    
+  margin: 20px auto;
+  max-width: 840px;             
+  padding: 0 12px;              
+  box-sizing: border-box;
+  flex-wrap: nowrap;            
+}
+
+
+/* ===== CANVAS ===== */
+.game__canvas {
+  background: #111;
+  display: block;
+  border: 2px solid #fff;
+  width: 600px;                 
+  height: 400px;                
+  max-width: calc(100% - 220px);
+  max-height: 60vh;
+  box-sizing: border-box;
+  flex: 0 0 auto;               
+}
+
+
+
+
+/* ===== SCOREBOARD ===== */
+.scoreboard {
+  background: #111;
+  border: 1px solid #fff;
+  padding: 10px;
+  width: 200px;
+  height: fit-content;
+  margin-left: 0;               
+  flex: 0 0 200px;              
+}
+
+.scoreboard__title {
+  margin-bottom: 10px;
+}
+
+.scoreboard__table {
+  margin: 0 auto;
+  border-collapse: collapse;
+  width: 100%;
+  color: #fff;
+}
+
+.scoreboard__table th,
+.scoreboard__table td {
+  border-bottom: 1px solid #444;
+  padding: 8px 12px;
+  text-align: center;
+}
+
+
+
+/* ===== FORM ===== */
+.form {
+  margin: 20px auto;
+}
+
+.form__input,
+.form__button {
+  padding: 10px;
+  margin: 5px;
+  border: none;
+  outline: none;
+  border-radius: 4px;
+}
+
+.form__button {
+  background: #fff;
+  color: #000;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.form__button:hover {
+  background: #444;
+  color: #fff;
+}
+
+
+/* ===== BURGER MENU ===== */
+.header__burger {
+  display: none;
+  position: fixed;
+  width: 30px;
+  height: 20px;
+  z-index: 1001; 
+}
+
+.header__burger::before,
+.header__burger::after,
+.header__burger span {
+  content: '';
+  background: #fff;
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  left: 0;
+  transition: 0.3s ease;
+}
+
+.header__burger::before { top: 0; }
+.header__burger span { top: 9px; }
+.header__burger::after { bottom: 0; }
+
+
+/* ===== ADAPTABILIDAD ===== */
+@media (max-width: 700px) {
+  .header__burger {
+    display: block;              
+    position: fixed;            
+    top: 55px;
+    right: 20px;
+    z-index: 9999;
+    cursor: pointer;
+  }
+
+  .header__burger::before,
+  .header__burger::after,
+  .header__burger span {
+    background: #fff;           
+  }
+
+  .header__overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.25);
+    z-index: 2000;
+    display: none;
+  }
+  .header__overlay.header__overlay--active {
+    display: block;
+  }
+
+
+  .header__nav {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 60vw;
+    height: 100vh;
+    background: #111;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    flex-direction: column; 
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+  }
+
+  .header__nav-list {
+    flex-direction: column;
+    gap: 20px; 
+    align-items: center;
+  }
+  
+  .header__nav--active {
+    transform: translateX(0);
+  }
+
+  .game__wrapper {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    gap: 14px;
+    padding: 0 18px;
+  }
+
+  .game__canvas {
+  width: 100%;
+  height: auto; 
+  max-width: 100%;
+  max-height: 50vh;
+  flex: 0 0 auto;
+  }
+
+  .scoreboard {
+    width: 90%;
+    flex: 0 0 auto;
+  }
+    .carousel-caption {
+    display: block !important; /* fuerza que se muestre */
+    bottom: 10px;               /* lo acercamos un poco */
+    text-align: center;
+    background: rgba(0, 0, 0, 0.4); /* mejora la legibilidad */
+    padding: 8px 12px;
+    border-radius: 8px;
+  }
+
+  .carousel-caption h5,
+  .carousel-caption p {
+    font-size: 0.9rem;
+    color: #E8B02C; /* visible sobre fondos oscuros */
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+  }
+}
+
