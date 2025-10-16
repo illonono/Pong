@@ -144,7 +144,7 @@ body {
 
 /* overlay global, evita que tape el carrusel */
 .header__overlay {
-  pointer-events: auto; /* overlay debe cerrarse con click, si lo colocas encima del carrusel se bloqueará; usa z-index correcto */
+  pointer-events: auto; /* overlay debe cerrarse con click, colocado encima del carrusel se bloqueará */
 }
 
 
@@ -407,4 +407,5 @@ body {
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
   }
 }
+
 
