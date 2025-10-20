@@ -79,32 +79,36 @@
 
   <!-- ===== MAIN ===== -->
   <main class="main">
-    <!-- Sección del juego -->
-    <section id="juego" class="game">
-      <h1 class="game__title">Mini Pong</h1>
-
-      <p class="game__controls">
-        🎮 Controles: En PC usa <strong>H</strong> (arriba) y <strong>B</strong> (abajo) o el puntero · 
-        En móviles arrastra la barra con el dedo.
-      </p>
-
-      <p id="score" class="game__score">Jugador 0 - 0 Amadeus</p>
-
-      <div class="game__wrapper">
-        <canvas id="pong" class="game__canvas" width="600" height="400"></canvas>
-
-        <aside class="scoreboard">
-          <h3 class="scoreboard__title">Tabla de Jugadores</h3>
-          <table id="scoreTable" class="scoreboard__table">
-            <thead>
-              <tr><th>Jugador</th><th>Puntaje</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </aside>
-      </div>
-    </section>
-
+  <!-- Sección del juego -->
+  <section id="juego" class="game">
+    <h1 class="game__title">Mini Pong</h1>
+  
+    <p class="game__controls">
+      🎮 Controles: En PC usa <strong>H</strong> (arriba) y <strong>B</strong> (abajo) o el puntero · 
+      En móviles arrastra la barra con el dedo.
+    </p>
+  
+    <p id="score" class="game__score">Jugador 0 - 0 Amadeus</p>
+  
+    <div class="game__wrapper">
+      <!-- Botón de pausa -->
+      <button id="pauseBtn" class="pause-button">⏸️</button>
+  
+      <!-- Único canvas del juego -->
+      <canvas id="pong" class="game__canvas" width="600" height="400"></canvas>
+  
+      <!-- Tabla de puntajes -->
+      <aside class="scoreboard">
+        <h3 class="scoreboard__title">Tabla de Jugadores</h3>
+        <table id="scoreTable" class="scoreboard__table">
+          <thead>
+            <tr><th>Jugador</th><th>Puntaje</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </aside>
+    </div>
+  </section>
 
     <!-- Historia -->
 <section id="historia" class="history">
@@ -227,5 +231,6 @@
   
 </body>
 </html>
+
 
 
