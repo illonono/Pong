@@ -260,7 +260,7 @@ body {
   background: #111;
   border: 1px solid #fff;
   padding: 10px;
-  width: 200px;
+  width: 100px;
   height: fit-content;
   margin-left: 0;               
   flex: 0 0 200px;              
@@ -433,6 +433,7 @@ body {
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
   }
 }
+
 
 
 
