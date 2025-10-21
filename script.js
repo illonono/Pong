@@ -306,7 +306,7 @@ function game() {
     render();
   }
 }
-setInterval(game, 1000 / fps);
+setInterval(game, 1600 / fps);
 
 
 
@@ -402,6 +402,7 @@ if (form) {
   //localStorage.removeItem('scores');
   //renderScoreTable();  guardadito,
 }
+
 
 
 
