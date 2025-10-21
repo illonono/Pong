@@ -24,7 +24,7 @@ function closeNav() {
   document.body.classList.remove('no-scroll');
 }
 
-// toggle del burger
+// toggles
 if (burger) {
   burger.addEventListener('click', () => {
     if (nav && nav.classList.contains('header__nav--active')) closeNav();
@@ -39,18 +39,18 @@ document.querySelectorAll('.header__nav a').forEach(a => a.addEventListener('cli
 
 
 /* ===== PONG GAME ===== */
-// elementos canvas y contexto
 const canvas = document.getElementById("pong");
 const ctx = canvas ? canvas.getContext("2d") : null;
+
+/* defensas tempranas */
 if (!canvas || !ctx) {
-  console.warn("Canvas o contexto 2D no encontrado. El juego no puede inicializarse correctamente.");
+  console.warn("Canvas o contexto 2D no encontrado. El juego no puede inicializarse.");
 }
 
 /* --- Resize dinámico --- */
 function resizeCanvas() {
   if (!canvas) return;
   const rect = canvas.getBoundingClientRect();
-  // usamos el tamaño que tenga el canvas por CSS (client rect)
   const newW = Math.max(1, Math.round(rect.width || 600));
   const newH = Math.max(1, Math.round(rect.height || 400));
   canvas.width = newW;
@@ -67,39 +67,34 @@ function resizeCanvas() {
 window.addEventListener('load', resizeCanvas);
 window.addEventListener('resize', resizeCanvas);
 
-// utilidad clamp
+// --- Utilidades ---
 function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
 
-/* ===== PROPIEDADES DEL JUEGO ===== */
+/* ===== Propiedades del juego ===== */
 const paddleHeight = 80;
 const paddleWidth = 10;
 
+// objetos
 const player = { x: 0, y: 0, w: paddleWidth, h: paddleHeight, dy: 8, score: 0 };
-const ai =     { x: 0, y: 0, w: paddleWidth, h: paddleHeight, dy: 6, score: 0 };
+const ai =     { x: 0, y: 0, w: paddleWidth, h: paddleHeight, dy: 6, score: 0 }; // ai.dy es su velocidad de desplazamiento
 const ball =   { x: 0, y: 0, r: 7, speed: 4, dx: 4, dy: 3 };
 
-resizeCanvas(); // inicializa posiciones
+resizeCanvas(); // inicial
 
 const scoreDisplay = document.getElementById("score");
 const playerScoreInput = document.getElementById("playerScore");
 
-
-/* ===== AJUSTES IA =====
-   errorMargin: píxeles de imprecisión
-   reactionTime: ms entre actualización del objetivo
-   missChance: probabilidad de fallo cuando la bola está muy cerca
-*/
+/* ===== AJUSTES DE LA IA ===== */
 const aiSettings = {
-  errorMargin: 60,
-  reactionTime: 120,
-  missChance: 0.10,
-  speedFactor: 1.0
+  errorMargin: 60,     // más alto = más inexacto
+  reactionTime: 120,   // ms (mayor = reacción más lenta)
+  missChance: 0.10,    // 0.10 = 10% de fallar en situaciones cercanas
+  speedFactor: 1.0     // multiplicador de ai.dy
 };
 
 let lastAiReaction = 0;
-let aiTargetY = ai.y + ai.h / 2;
+let aiTargetY = ai.y + ai.h / 2; // centro objetivo de la paleta
 let aiLastMissTime = 0;
-
 
 /* ===== DIBUJOS ===== */
 function drawRect(x, y, w, h, color) {
@@ -115,17 +110,17 @@ function drawCircle(x, y, r, color) {
   ctx.fill();
 }
 
-
 /* ===== CONTROLES USUARIO ===== */
-// teclado H (arriba) y B (abajo)
+// teclado: H arriba, B abajo (se mueve paso a paso)
 document.addEventListener("keydown", (e) => {
   const key = e.key.toLowerCase();
   if (key === "h") player.y -= player.dy;
   if (key === "b") player.y += player.dy;
+  // límites
   if (canvas) player.y = clamp(player.y, 0, canvas.height - player.h);
 });
 
-// mouse mueve la paleta del jugador
+// mouse: puntero mueve el centro de la paleta del jugador
 if (canvas) {
   canvas.addEventListener("mousemove", (e) => {
     const rect = canvas.getBoundingClientRect();
@@ -133,7 +128,7 @@ if (canvas) {
     player.y = clamp(player.y, 0, canvas.height - player.h);
   });
 
-  // touch (móviles)
+  // touch (móvil)
   canvas.addEventListener("touchmove", (e) => {
     e.preventDefault();
     const rect = canvas.getBoundingClientRect();
@@ -142,9 +137,8 @@ if (canvas) {
   }, { passive: false });
 }
 
-
-/* ===== FÍSICA: COLISIONES y REBOTES ===== */
-// AABB vs círculo (simple)
+/* ===== FÍSICA: COLISIONES + REBOTE MÁS REALISTA ===== */
+// detección AABB con círculo (simple)
 function collision(b, p) {
   return b.x - b.r < p.x + p.w &&
          b.x + b.r > p.x &&
@@ -152,8 +146,9 @@ function collision(b, p) {
          b.y + b.r > p.y;
 }
 
-// ajuste de ángulo según punto de impacto (paddle)
+// manejar colisión con paleta y ajustar ángulo según punto de impacto
 function handlePaddleCollision(paddle) {
+  // punto relativo (-1..1)
   const relativeY = (ball.y - (paddle.y + paddle.h / 2)) / (paddle.h / 2);
   const clamped = clamp(relativeY, -1, 1);
 
@@ -161,25 +156,28 @@ function handlePaddleCollision(paddle) {
   ball.speed = Math.min(10, speedBefore * 1.06);
 
   const toRight = (paddle === player);
-  // definimos dx con magnitud ball.speed (en unidades "por frame a 60fps")
+
+  // establecer dx con magnitud ball.speed y signo adecuado
   ball.dx = (toRight ? 1 : -1) * Math.abs(ball.speed);
-  // dy proporcional al impacto
+
+  // ajustar dy proporcional al impacto
   ball.dy = clamped * ball.speed * 0.9;
 }
 
-
 /* ===== IA: objetivo, reacción y movimiento (no perfecta) ===== */
-// ahora acepta deltaMs para escalar movimiento según tiempo
-function updateAI(deltaMs = 16.6667) {
+function updateAI() {
   if (!canvas) return;
   const now = Date.now();
 
-  if (ball.dx > 0) { // bola acercándose a IA
+  // Si la bola se dirige hacia la IA (dx > 0), actualizamos el objetivo con latencia
+  if (ball.dx > 0) {
     if (now - lastAiReaction > aiSettings.reactionTime) {
+      // offset aleatorio dentro del margen de error
       const offset = (Math.random() * 2 - 1) * aiSettings.errorMargin;
       aiTargetY = clamp(ball.y + offset, ai.h / 2, canvas.height - ai.h / 2);
       lastAiReaction = now;
 
+      // posibilidad de "fallar" si la bola está cerca
       const closeToAi = ball.x > canvas.width - 120;
       if (closeToAi && Math.random() < aiSettings.missChance) {
         const missOffset = (Math.random() > 0.5 ? 1 : -1) * (ai.h * 0.7 + Math.random() * aiSettings.errorMargin);
@@ -187,49 +185,44 @@ function updateAI(deltaMs = 16.6667) {
         aiLastMissTime = now;
       }
     }
-  } else { // bola va hacia el jugador
+  } else {
+    // bola va hacia el jugador: la IA vuelve al centro lentamente
     if (now - lastAiReaction > aiSettings.reactionTime) {
       aiTargetY = canvas.height / 2;
       lastAiReaction = now;
     }
   }
 
-  // mover IA hacia aiTargetY, escalando por delta
-  const f = deltaMs / (1000/60); // factor relativo a 60fps
+  // mover IA hacia aiTargetY (apuntar al centro de la paleta)
   const aiCenter = ai.y + ai.h / 2;
   const diff = aiTargetY - aiCenter;
-  const step = Math.sign(diff) * Math.min(Math.abs(diff), ai.dy * aiSettings.speedFactor * f);
+  const step = Math.sign(diff) * Math.min(Math.abs(diff), ai.dy * aiSettings.speedFactor);
   ai.y += step;
 
   // límites
   ai.y = clamp(ai.y, 0, canvas.height - ai.h);
 }
 
-
-/* ===== RESET BOLA ===== */
+/* ===== UPDATE / RENDER / LOOP ===== */
 function resetBall() {
   if (!canvas) return;
   ball.x = canvas.width / 2;
   ball.y = canvas.height / 2;
   ball.speed = 4;
-  const angle = (Math.random() * 0.6) - 0.3; // -0.3..0.3 radians approx
+  const angle = (Math.random() * 0.6) - 0.3; // -0.3..0.3
   const dir = Math.random() > 0.5 ? 1 : -1;
   ball.dx = dir * Math.abs(ball.speed * Math.cos(angle));
   ball.dy = ball.speed * Math.sin(angle);
 }
 
-
-/* ===== UPDATE (usa deltaMs) ===== */
-function update(deltaMs) {
+function update() {
   if (!canvas) return;
-  // factor respecto a 60fps (16.666... ms)
-  const f = deltaMs / (1000/60);
 
-  // mover bola escalando por tiempo
-  ball.x += ball.dx * f;
-  ball.y += ball.dy * f;
+  // Movimiento bola
+  ball.x += ball.dx;
+  ball.y += ball.dy;
 
-  // rebote superior/inferior
+  // Rebote superior/inferior
   if (ball.y + ball.r > canvas.height) {
     ball.y = canvas.height - ball.r;
     ball.dy *= -1;
@@ -239,21 +232,20 @@ function update(deltaMs) {
     ball.dy *= -1;
   }
 
-  // actualizar IA pasando delta
-  updateAI(deltaMs);
+  // Actualizar IA
+  updateAI();
 
-  // colisión con jugador
+  // Colisiones con paletas
   if (collision(ball, player)) {
     handlePaddleCollision(player);
     ball.x = player.x + player.w + ball.r + 0.5;
   }
 
-  // colisión con IA (ten cuidado con la ventana de "fallo" que definimos)
   if (collision(ball, ai)) {
     const now = Date.now();
     const justMissed = (now - aiLastMissTime) < 800;
     if (justMissed && Math.random() < 0.8) {
-      // falla: no rebotar, empujar la bola fuera para evitar retrigger
+      // la IA falla intencionalmente: no rebotar
       ball.x = ai.x - ball.r - 0.5;
     } else {
       handlePaddleCollision(ai);
@@ -261,7 +253,7 @@ function update(deltaMs) {
     }
   }
 
-  // puntos
+  // Puntos
   if (ball.x - ball.r < 0) {
     ai.score++;
     resetBall();
@@ -271,13 +263,11 @@ function update(deltaMs) {
     resetBall();
   }
 
-  // actualizar displays
+  // Mostrar puntaje
   if (scoreDisplay) scoreDisplay.textContent = `Jugador ${player.score} - ${ai.score} Amadeus`;
   if (playerScoreInput) playerScoreInput.value = player.score;
 }
 
-
-/* ===== RENDER ===== */
 function render() {
   if (!ctx || !canvas) return;
   // fondo
@@ -289,68 +279,35 @@ function render() {
   drawCircle(ball.x, ball.y, ball.r, "#fff");
 }
 
+/* game loop */
+function game() {
+  update();
+  render();
+}
+const fps = 60;
+setInterval(game, 1000 / fps);
 
-/* ===== LOOP PRINCIPAL con requestAnimationFrame (delta-safe) ===== */
+
+/* ===== SISTEMA DE PAUSA ===== */
 let paused = false;
-let lastTs = null;
-let rafId = null;
+const pauseBtn = document.getElementById("pauseBtn");
 
-function loop(ts) {
-  if (!lastTs) lastTs = ts;
-  // limitar delta para evitar saltos enormes cuando la pestaña vuelve del background
-  const delta = Math.min(40, ts - lastTs);
-  lastTs = ts;
-
-  if (!paused) {
-    update(delta);
-    render();
-  } else {
-    // opcional: se podría dibujar un overlay de pausa aquí
-  }
-
-  rafId = requestAnimationFrame(loop);
+if (pauseBtn) {
+  pauseBtn.addEventListener("click", () => {
+    paused = !paused;
+    pauseBtn.textContent = paused ? "▶️" : "⏸️";
+  });
 }
 
-// arrancar loop
-rafId = requestAnimationFrame(loop);
-
-
-/* ===== BOTÓN DE PAUSA (encima del canvas) ===== */
-// Intentamos obtener un botón existente (#pauseBtn). Si no existe, lo creamos y lo posicionamos.
-let pauseBtn = document.getElementById('pauseBtn');
-(function ensurePauseButton() {
-  const wrapper = document.querySelector('.game__wrapper') || document.body;
-  // aseguramos que wrapper tenga position: relative para posicion absoluta del botón
-  const compStyle = window.getComputedStyle(wrapper);
-  if (compStyle.position === 'static' || !compStyle.position) {
-    wrapper.style.position = wrapper.style.position || 'relative';
+// reescribir el bucle de juego para respetar el estado de pausa
+function game() {
+  if (!paused) {
+    update();
+    render();
   }
+}
+setInterval(game, 1000 / fps);
 
-  if (!pauseBtn) {
-    pauseBtn = document.createElement('button');
-    pauseBtn.id = 'pauseBtn';
-    pauseBtn.type = 'button';
-    pauseBtn.className = 'pause-button';
-    pauseBtn.textContent = '⏸️';
-    // insertarlo como primer hijo para que quede encima del canvas
-    wrapper.insertBefore(pauseBtn, wrapper.firstChild);
-  }
-
-  // toggle pausa al click
-  pauseBtn.addEventListener('click', () => {
-    paused = !paused;
-    pauseBtn.textContent = paused ? '▶️' : '⏸️';
-    // si pausas, no cancelamos RAF; solo detenemos actualización/render dentro del loop
-  });
-
-  // opcional: tecla P para pausar
-  document.addEventListener('keydown', (e) => {
-    if (e.key.toLowerCase() === 'p') {
-      paused = !paused;
-      if (pauseBtn) pauseBtn.textContent = paused ? '▶️' : '⏸️';
-    }
-  });
-}());
 
 
 /* ===== SISTEMA DE PUNTAJES (TOP 15, sin duplicados) ===== */
@@ -375,7 +332,7 @@ function escapeHtml(str) {
 function renderScoreTable() {
   if (!tableBody) return;
   const scores = getStoredScores();
-  // ordenar desc por score; desempatar por timestamp asc
+  // Orden descendente por score, y por timestamp ascendente para desempates
   scores.sort((a, b) => Number(b.score) - Number(a.score) || (a.ts || 0) - (b.ts || 0));
   tableBody.innerHTML = '';
   for (const s of scores) {
@@ -386,20 +343,21 @@ function renderScoreTable() {
   }
 }
 
+// utilidad para añadir score con deduplicado + top N
 function addScore(name, score, maxEntries = 15) {
   const trimmedName = (name || 'Anon').trim();
   const sc = Number(score || 0);
 
-  // evitamos puntajes 0 o inválidos
+  // opcional: evita guardar puntajes 0 para no ensuciar la tabla
   if (sc <= 0) return false;
 
   const scores = getStoredScores();
   scores.push({ name: trimmedName, score: sc, ts: Date.now() });
 
-  // ordenar por score desc y timestamp asc
-  scores.sort((a, b) => Number(b.score) - Number(a.score) || (a.ts || 0) - (b.ts || 0));3
+  // ordenar
+  scores.sort((a, b) => Number(b.score) - Number(a.score) || (a.ts || 0) - (b.ts || 0));
 
-  // eliminar duplicados exactos (mismo nombre + mismo score)
+  // eliminar duplicados exactos (mismo name y mismo score), manteniendo el primero (mejor orden)
   const seen = new Set();
   const dedup = [];
   for (const s of scores) {
@@ -417,19 +375,30 @@ function addScore(name, score, maxEntries = 15) {
   return true;
 }
 
-// renderizar al cargar la página
+// limpiar puntajes (útil para desarrollo o correr desde consola)
+// localStorage.removeItem('scores');
+
+// renderizar al cargar
 document.addEventListener('DOMContentLoaded', renderScoreTable);
 
-// handler del form
+// handler del form (reemplaza tu handler anterior)
 if (form) {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const nameInput = document.getElementById('playerName');
-    const name = (nameInput && nameInput.value) ? nameInput.value :
+    const name = (nameInput && nameInput.value) ? nameInput.value : 'Anon';
+    const score = Number(player.score || 0);
 
-
-
-
-
-
-
+    const added = addScore(name, score, 15);
+    if (!added) {
+      // opcional: feedback si no se guardó por ser 0
+      // alert('No hay puntaje válido para guardar (debe ser > 0).');
+    } else {
+      // limpiar campo nombre 
+      if (nameInput) nameInput.value = '';
+      if (playerScoreInput) playerScoreInput.value = score;
+    }
+  });
+  //localStorage.removeItem('scores');
+  //renderScoreTable();  guardadito,
+}
