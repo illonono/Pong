@@ -221,8 +221,8 @@ body {
 /* BOTÓN DE PAUSA */
 .pause-button {
   position: absolute;
-  top: 10px;      /* distancia desde la parte superior del canvas */
-  left: 10px;    /* puedes usar right: en vez de left si prefieres esquina derecha */
+  top: 9px;      /* distancia desde la parte superior del canvas */
+  right: 10px;    /* puedes usar right: en vez de left si prefieres esquina derecha */
   z-index: 10;
   background: rgba(255, 255, 255, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.4);
@@ -234,6 +234,10 @@ body {
   backdrop-filter: blur(6px);
   transition: all 0.2s ease;
 }
+
+
+
+
 
 .pause-button:hover {
   background: rgba(255, 255, 255, 0.25);
@@ -440,6 +444,7 @@ body {
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
   }
 }
+
 
 
 
