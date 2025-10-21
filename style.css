@@ -215,11 +215,16 @@ body {
   flex-wrap: nowrap;            
 }
 
+.game-container {
+  position: relative; /* NECESARIO para que el botón se posicione sobre el canvas */
+  display: inline-block; /* Mantiene tamaño ajustado al canvas */
+}
+
 /* BOTÓN DE PAUSA */
 .pause-button {
   position: absolute;
-  top: 15px;
-  left: 15px;
+  top: 10px;      /* distancia desde la parte superior del canvas */
+  right: 10px;    /* puedes usar right: en vez de left si prefieres esquina derecha */
   z-index: 10;
   background: rgba(255, 255, 255, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.4);
@@ -410,7 +415,11 @@ body {
   flex: 0 0 auto;
   }
 
-  .pause-button { padding: 8px 10px; font-size: 18px; top: 10px; left: 10px; }
+  .pause-button {
+    padding: 6px 10px;
+    font-size: 18px;
+    top: 8px;
+    right: 8px;
   }
 
   .scoreboard {
@@ -433,6 +442,7 @@ body {
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
   }
 }
+
 
 
 
