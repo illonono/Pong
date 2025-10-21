@@ -279,13 +279,35 @@ function render() {
   drawCircle(ball.x, ball.y, ball.r, "#fff");
 }
 
-/* game loop */
+/* GAME LOOP */
 function game() {
   update();
   render();
 }
 const fps = 60;
 setInterval(game, 1000 / fps);
+
+
+/* ===== SISTEMA DE PAUSA ===== */
+let paused = false;
+const pauseBtn = document.getElementById("pauseBtn");
+
+if (pauseBtn) {
+  pauseBtn.addEventListener("click", () => {
+    paused = !paused;
+    pauseBtn.textContent = paused ? "▶️" : "⏸️";
+  });
+}
+
+// reescribir el bucle de juego para respetar el estado de pausa
+function game() {
+  if (!paused) {
+    update();
+    render();
+  }
+}
+setInterval(game, 60 / fps);
+
 
 
 /* ===== SISTEMA DE PUNTAJES (TOP 15, sin duplicados) ===== */
@@ -380,4 +402,5 @@ if (form) {
   //localStorage.removeItem('scores');
   //renderScoreTable();  guardadito,
 }
+
 
