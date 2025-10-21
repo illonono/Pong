@@ -222,7 +222,7 @@ body {
 .pause-button {
   position: absolute;
   top: 1px;      /* distancia desde la parte superior del canvas */
-  left: -35px;    /* puedes usar right: en vez de left si prefieres esquina derecha */
+  left: -50px;    /* puedes usar right: en vez de left si prefieres esquina derecha */
   z-index: 10;
   background: rgba(255, 255, 255, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.4);
@@ -421,7 +421,7 @@ body {
     padding: 6px 10px;
     font-size: 18px;
     top: 8px;
-    right: 8px;
+    right: -20px;
   }
 
   .scoreboard {
@@ -444,6 +444,7 @@ body {
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
   }
 }
+
 
 
 
