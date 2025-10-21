@@ -279,19 +279,12 @@ function render() {
   drawCircle(ball.x, ball.y, ball.r, "#fff");
 }
 
-/* GAME LOOP */
-function game() {
-  update();
-  render();
-}
-const fps = 60;
-setInterval(game, 1000 / fps);
-
-
-/* ===== SISTEMA DE PAUSA ===== */
+/* ===== SISTEMA DE PAUSA + LOOP CORRECTO ===== */
+const fps = 60;                // frames por segundo (si usas setInterval)
 let paused = false;
 const pauseBtn = document.getElementById("pauseBtn");
 
+// toggle de pausa si existe el botón
 if (pauseBtn) {
   pauseBtn.addEventListener("click", () => {
     paused = !paused;
@@ -299,14 +292,15 @@ if (pauseBtn) {
   });
 }
 
-// reescribir el bucle de juego para respetar el estado de pausa
+// único game loop: respeta paused
 function game() {
   if (!paused) {
     update();
     render();
   }
 }
-const fps = 60;
+
+// arrancar loop (usa setInterval porque ya lo tenías; opcionalmente puedes usar requestAnimationFrame)
 setInterval(game, 1000 / fps);
 
 
@@ -403,6 +397,7 @@ if (form) {
   //localStorage.removeItem('scores');
   //renderScoreTable();  guardadito,
 }
+
 
 
 
