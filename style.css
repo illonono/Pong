@@ -411,7 +411,7 @@ body {
   }
 
   .pause-button { padding: 8px 10px; font-size: 18px; top: 10px; left: 10px; }
-}
+  }
 
   .scoreboard {
     width: 90%;
@@ -433,6 +433,7 @@ body {
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
   }
 }
+
 
 
 
