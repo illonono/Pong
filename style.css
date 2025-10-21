@@ -204,6 +204,7 @@ body {
 
 /* Contenedor del juego y la tabla */
 .game__wrapper {
+  display: flex;
   position: relative;
   justify-content: center;      
   align-items: flex-start;
@@ -439,6 +440,7 @@ body {
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
   }
 }
+
 
 
 
