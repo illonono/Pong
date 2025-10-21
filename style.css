@@ -222,7 +222,7 @@ body {
 .pause-button {
   position: absolute;
   top: 9px;      /* distancia desde la parte superior del canvas */
-  right: 10px;    /* puedes usar right: en vez de left si prefieres esquina derecha */
+  right: 3px;    /* puedes usar right: en vez de left si prefieres esquina derecha */
   z-index: 10;
   background: rgba(255, 255, 255, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.4);
@@ -444,6 +444,7 @@ body {
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
   }
 }
+
 
 
 
