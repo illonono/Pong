@@ -218,19 +218,24 @@ body {
 /* BOTÓN DE PAUSA */
 .pause-button {
   position: absolute;
-  top: 8px;
-  left: 8px;
-  z-index: 9999;
-  background: rgba(255,255,255,0.95);
-  color: #000;
-  border: none;
-  border-radius: 6px;
-  padding: 6px 8px;
+  top: 15px;
+  left: 15px;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: white;
+  font-size: 20px;
+  padding: 8px 12px;
+  border-radius: 10px;
   cursor: pointer;
-  font-size: 16px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  backdrop-filter: blur(6px);
+  transition: all 0.2s ease;
 }
 
+.pause-button:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.05);
+}
 
 
 
@@ -428,6 +433,7 @@ body {
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
   }
 }
+
 
 
 
