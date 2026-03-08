@@ -331,16 +331,26 @@ function escapeHtml(str) {
 
 function renderScoreTable() {
   if (!tableBody) return;
+
   const scores = getStoredScores();
+
   // Orden descendente por score, y por timestamp ascendente para desempates
   scores.sort((a, b) => Number(b.score) - Number(a.score) || (a.ts || 0) - (b.ts || 0));
+
   tableBody.innerHTML = '';
-  for (const s of scores) {
+
+  scores.forEach((s, i) => {
     const name = escapeHtml(s.name);
     const score = Number(s.score);
-    const row = `<tr><td>${name}</td><td>${score}</td></tr>`;
+
+    let medal = "";
+    if (i === 0) medal = "🥇";
+    else if (i === 1) medal = "🥈";
+    else if (i === 2) medal = "🥉";
+
+    const row = `<tr><td>${medal} ${name}</td><td>${score}</td></tr>`;
     tableBody.insertAdjacentHTML('beforeend', row);
-  }
+  });
 }
 
 // utilidad para añadir score con deduplicado + top N
@@ -402,6 +412,7 @@ if (form) {
   //localStorage.removeItem('scores');
   //renderScoreTable();  guardadito,
 }
+
 
 
 
