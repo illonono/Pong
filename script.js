@@ -310,7 +310,12 @@ const form = document.getElementById("playerForm");
 const tableBody = document.querySelector("#scoreTable tbody");
 
 function getStoredScores() {
-  return JSON.parse(localStorage.getItem('scores')) || [];
+  try {
+    const data = JSON.parse(localStorage.getItem('scores'));
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
+  }
 }
 function saveStoredScores(arr) {
   localStorage.setItem('scores', JSON.stringify(arr));
@@ -340,7 +345,7 @@ function renderScoreTable() {
 
 // utilidad para añadir score con deduplicado + top N
 function addScore(name, score, maxEntries = 15) {
-  const trimmedName = (name || 'Anon').trim();
+  const trimmedName = (name || 'Gus').trim().slice(0, 25);
   const sc = Number(score || 0);
 
   // opcional: evita guardar puntajes 0 para no ensuciar la tabla
@@ -397,6 +402,7 @@ if (form) {
   //localStorage.removeItem('scores');
   //renderScoreTable();  guardadito,
 }
+
 
 
 
