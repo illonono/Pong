@@ -183,7 +183,7 @@ function handlePaddleCollision(paddle) {
   ball.dy = clamp(ball.dy, -ball.speed, ball.speed);
 
   // normalizar velocidad
-  const mag = Math.hypot(ball.dx, ball.dy);
+  const mag = Math.hypot(ball.dx, ball.dy) || 1;
   ball.dx = (ball.dx / mag) * ball.speed;
   ball.dy = (ball.dy / mag) * ball.speed;
 }
@@ -442,6 +442,7 @@ if (form) {
   //localStorage.removeItem('scores');
   //renderScoreTable();  guardadito,
 }
+
 
 
 
