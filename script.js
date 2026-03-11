@@ -170,7 +170,7 @@ function handlePaddleCollision(paddle) {
   const clamped = clamp(relativeY, -1, 1);
 
   // aumentar velocidad progresivamente
-  ball.speed = Math.min(10, ball.speed * 1.06);
+  ball.speed = Math.min(9, ball.speed * 1.06);
 
   const toRight = (paddle === player);
 
@@ -446,6 +446,7 @@ if (form) {
   //localStorage.removeItem('scores');
   //renderScoreTable();  guardadito,
 }
+
 
 
 
