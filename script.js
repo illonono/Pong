@@ -221,7 +221,8 @@ function updateAI() {
   // mover IA hacia aiTargetY (apuntar al centro de la paleta)
   const aiCenter = ai.y + ai.h / 2;
   const diff = aiTargetY - aiCenter;
-  const step = Math.sign(diff) * Math.min(Math.abs(diff), ai.dy * aiSettings.speedFactor);
+  const aiSpeed = ai.dy * aiSettings.speedFactor + ball.speed * 0.35;
+  const step = Math.sign(diff) * Math.min(Math.abs(diff), aiSpeed);
   const prevY = ai.y;
   ai.y += step;
   ai.vy = ai.y - prevY;
@@ -263,10 +264,12 @@ function update() {
   updateAI();
 
   // Colisiones con paletas
-  if (collision(ball, player)) {
+  if (ball.dx < 0 && collision(ball, player)) {
     handlePaddleCollision(player);
     ball.x = player.x + player.w + ball.r + 0.5;
   }
+  
+  if (ball.dx > 0 && collision(ball, ai)) {
 
   if (collision(ball, ai)) {
     const now = Date.now();
@@ -443,6 +446,7 @@ if (form) {
   //localStorage.removeItem('scores');
   //renderScoreTable();  guardadito,
 }
+
 
 
 
