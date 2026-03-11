@@ -114,27 +114,44 @@ function drawCircle(x, y, r, color) {
 // teclado: H arriba, B abajo (se mueve paso a paso)
 document.addEventListener("keydown", (e) => {
   const key = e.key.toLowerCase();
+
+  const prevY = player.y;
+
   if (key === "h") player.y -= player.dy;
   if (key === "b") player.y += player.dy;
-  // límites
+
   if (canvas) player.y = clamp(player.y, 0, canvas.height - player.h);
+
+  player.vy = player.y - prevY;
 });
 
 // mouse: puntero mueve el centro de la paleta del jugador
 if (canvas) {
   canvas.addEventListener("mousemove", (e) => {
     const rect = canvas.getBoundingClientRect();
+  
+    const prevY = player.y;
+  
     player.y = e.clientY - rect.top - player.h / 2;
     player.y = clamp(player.y, 0, canvas.height - player.h);
-  });
+  
+    player.vy = player.y - prevY;
+});
 
   // touch (móvil)
-  canvas.addEventListener("touchmove", (e) => {
-    e.preventDefault();
-    const rect = canvas.getBoundingClientRect();
-    player.y = e.touches[0].clientY - rect.top - player.h / 2;
-    player.y = clamp(player.y, 0, canvas.height - player.h);
-  }, { passive: false });
+canvas.addEventListener("touchmove", (e) => {
+  e.preventDefault();
+
+  const rect = canvas.getBoundingClientRect();
+
+  const prevY = player.y;
+
+  player.y = e.touches[0].clientY - rect.top - player.h / 2;
+  player.y = clamp(player.y, 0, canvas.height - player.h);
+
+  player.vy = player.y - prevY;
+
+}, { passive: false });
 }
 
 /* ===== FÍSICA: COLISIONES + REBOTE MÁS REALISTA ===== */
@@ -416,6 +433,7 @@ if (form) {
   //localStorage.removeItem('scores');
   //renderScoreTable();  guardadito,
 }
+
 
 
 
