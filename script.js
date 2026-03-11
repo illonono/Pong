@@ -169,16 +169,17 @@ function handlePaddleCollision(paddle) {
   const relativeY = (ball.y - (paddle.y + paddle.h / 2)) / (paddle.h / 2);
   const clamped = clamp(relativeY, -1, 1);
 
-  const speedBefore = Math.hypot(ball.dx, ball.dy);
-  ball.speed = Math.min(10, speedBefore * 1.06);
+  // aumentar velocidad progresivamente
+  ball.speed = Math.min(10, ball.speed * 1.06);
 
   const toRight = (paddle === player);
 
   // establecer dx con magnitud ball.speed y signo adecuado
   ball.dx = (toRight ? 1 : -1) * Math.abs(ball.speed);
 
-  // ajustar dy proporcional al impacto
   const spin = clamp(paddle.vy * 0.35, -2, 2);
+  
+  // ajustar dy proporcional al impacto
   ball.dy = clamped * ball.speed * 0.9 + spin;
   ball.dy = clamp(ball.dy, -ball.speed, ball.speed);
 
@@ -442,6 +443,7 @@ if (form) {
   //localStorage.removeItem('scores');
   //renderScoreTable();  guardadito,
 }
+
 
 
 
