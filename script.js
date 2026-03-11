@@ -270,10 +270,9 @@ function update() {
   }
   
   if (ball.dx > 0 && collision(ball, ai)) {
-
-  if (collision(ball, ai)) {
     const now = Date.now();
     const justMissed = (now - aiLastMissTime) < 800;
+  
     if (justMissed && Math.random() < 0.8) {
       // la IA falla intencionalmente: no rebotar
       ball.x = ai.x - ball.r - 0.5;
@@ -446,6 +445,7 @@ if (form) {
   //localStorage.removeItem('scores');
   //renderScoreTable();  guardadito,
 }
+
 
 
 
