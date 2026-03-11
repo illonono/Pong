@@ -75,8 +75,8 @@ const paddleHeight = 80;
 const paddleWidth = 10;
 
 // objetos
-const player = { x: 0, y: 0, w: paddleWidth, h: paddleHeight, dy: 8, vy: 0, score: 0 };
-const ai =     { x: 0, y: 0, w: paddleWidth, h: paddleHeight, dy: 6, vy: 0, score: 0 }; // ai.dy es su velocidad de desplazamiento
+const player = { x: 0, y: 0, w: paddleWidth, h: paddleHeight, dy: 8, score: 0 };
+const ai =     { x: 0, y: 0, w: paddleWidth, h: paddleHeight, dy: 6, score: 0 }; // ai.dy es su velocidad de desplazamiento
 const ball =   { x: 0, y: 0, r: 7, speed: 4, dx: 4, dy: 3 };
 
 resizeCanvas(); // inicial
@@ -114,44 +114,27 @@ function drawCircle(x, y, r, color) {
 // teclado: H arriba, B abajo (se mueve paso a paso)
 document.addEventListener("keydown", (e) => {
   const key = e.key.toLowerCase();
-
-  const prevY = player.y;
-
   if (key === "h") player.y -= player.dy;
   if (key === "b") player.y += player.dy;
-
+  // límites
   if (canvas) player.y = clamp(player.y, 0, canvas.height - player.h);
-
-  player.vy = player.y - prevY;
 });
 
 // mouse: puntero mueve el centro de la paleta del jugador
 if (canvas) {
   canvas.addEventListener("mousemove", (e) => {
     const rect = canvas.getBoundingClientRect();
-  
-    const prevY = player.y;
-  
     player.y = e.clientY - rect.top - player.h / 2;
     player.y = clamp(player.y, 0, canvas.height - player.h);
-  
-    player.vy = player.y - prevY;
-});
+  });
 
   // touch (móvil)
-canvas.addEventListener("touchmove", (e) => {
-  e.preventDefault();
-
-  const rect = canvas.getBoundingClientRect();
-
-  const prevY = player.y;
-
-  player.y = e.touches[0].clientY - rect.top - player.h / 2;
-  player.y = clamp(player.y, 0, canvas.height - player.h);
-
-  player.vy = player.y - prevY;
-
-}, { passive: false });
+  canvas.addEventListener("touchmove", (e) => {
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    player.y = e.touches[0].clientY - rect.top - player.h / 2;
+    player.y = clamp(player.y, 0, canvas.height - player.h);
+  }, { passive: false });
 }
 
 /* ===== FÍSICA: COLISIONES + REBOTE MÁS REALISTA ===== */
@@ -169,24 +152,16 @@ function handlePaddleCollision(paddle) {
   const relativeY = (ball.y - (paddle.y + paddle.h / 2)) / (paddle.h / 2);
   const clamped = clamp(relativeY, -1, 1);
 
-  // aumentar velocidad progresivamente
-  ball.speed = Math.min(9, ball.speed * 1.06);
+  const speedBefore = Math.hypot(ball.dx, ball.dy);
+  ball.speed = Math.min(10, speedBefore * 1.06);
 
   const toRight = (paddle === player);
 
   // establecer dx con magnitud ball.speed y signo adecuado
   ball.dx = (toRight ? 1 : -1) * Math.abs(ball.speed);
 
-  const spin = clamp(paddle.vy * 0.35, -2, 2);
-  
   // ajustar dy proporcional al impacto
-  ball.dy = clamped * ball.speed * 0.9 + spin;
-  ball.dy = clamp(ball.dy, -ball.speed, ball.speed);
-
-  // normalizar velocidad
-  const mag = Math.hypot(ball.dx, ball.dy) || 1;
-  ball.dx = (ball.dx / mag) * ball.speed;
-  ball.dy = (ball.dy / mag) * ball.speed;
+  ball.dy = clamped * ball.speed * 0.9;
 }
 
 /* ===== IA: objetivo, reacción y movimiento (no perfecta) ===== */
@@ -221,11 +196,8 @@ function updateAI() {
   // mover IA hacia aiTargetY (apuntar al centro de la paleta)
   const aiCenter = ai.y + ai.h / 2;
   const diff = aiTargetY - aiCenter;
-  const aiSpeed = ai.dy * aiSettings.speedFactor + ball.speed * 0.35;
-  const step = Math.sign(diff) * Math.min(Math.abs(diff), aiSpeed);
-  const prevY = ai.y;
+  const step = Math.sign(diff) * Math.min(Math.abs(diff), ai.dy * aiSettings.speedFactor);
   ai.y += step;
-  ai.vy = ai.y - prevY;
 
   // límites
   ai.y = clamp(ai.y, 0, canvas.height - ai.h);
@@ -264,15 +236,14 @@ function update() {
   updateAI();
 
   // Colisiones con paletas
-  if (ball.dx < 0 && collision(ball, player)) {
+  if (collision(ball, player)) {
     handlePaddleCollision(player);
     ball.x = player.x + player.w + ball.r + 0.5;
   }
-  
-  if (ball.dx > 0 && collision(ball, ai)) {
+
+  if (collision(ball, ai)) {
     const now = Date.now();
     const justMissed = (now - aiLastMissTime) < 800;
-  
     if (justMissed && Math.random() < 0.8) {
       // la IA falla intencionalmente: no rebotar
       ball.x = ai.x - ball.r - 0.5;
@@ -445,6 +416,7 @@ if (form) {
   //localStorage.removeItem('scores');
   //renderScoreTable();  guardadito,
 }
+
 
 
 
