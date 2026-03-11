@@ -178,7 +178,8 @@ function handlePaddleCollision(paddle) {
   ball.dx = (toRight ? 1 : -1) * Math.abs(ball.speed);
 
   // ajustar dy proporcional al impacto
-  ball.dy = clamped * ball.speed * 0.9;
+  ball.dy = clamped * ball.speed * 0.9 + paddle.vy * 0.35;
+  ball.dy = clamp(ball.dy, -ball.speed, ball.speed);
 }
 
 /* ===== IA: objetivo, reacción y movimiento (no perfecta) ===== */
@@ -433,6 +434,7 @@ if (form) {
   //localStorage.removeItem('scores');
   //renderScoreTable();  guardadito,
 }
+
 
 
 
