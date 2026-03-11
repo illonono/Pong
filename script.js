@@ -215,7 +215,9 @@ function updateAI() {
   const aiCenter = ai.y + ai.h / 2;
   const diff = aiTargetY - aiCenter;
   const step = Math.sign(diff) * Math.min(Math.abs(diff), ai.dy * aiSettings.speedFactor);
+  const prevY = ai.y;
   ai.y += step;
+  ai.vy = ai.y - prevY;
 
   // límites
   ai.y = clamp(ai.y, 0, canvas.height - ai.h);
@@ -434,6 +436,7 @@ if (form) {
   //localStorage.removeItem('scores');
   //renderScoreTable();  guardadito,
 }
+
 
 
 
