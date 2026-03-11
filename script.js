@@ -300,12 +300,8 @@ function game() {
   }
 }
 
-function gameLoop() {
-  game();
-  requestAnimationFrame(gameLoop);
-}
-
-requestAnimationFrame(gameLoop);
+// arrancar loop (usa setInterval porque ya lo tenías; opcionalmente puedes usar requestAnimationFrame)
+setInterval(game, 1000 / fps);
 
 
 
@@ -416,6 +412,7 @@ if (form) {
   //localStorage.removeItem('scores');
   //renderScoreTable();  guardadito,
 }
+
 
 
 
