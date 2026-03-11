@@ -181,6 +181,8 @@ function handlePaddleCollision(paddle) {
   const spin = clamp(paddle.vy * 0.35, -2, 2);
   ball.dy = clamped * ball.speed * 0.9 + spin;
   ball.dy = clamp(ball.dy, -ball.speed, ball.speed);
+
+  // normalizar velocidad
   const mag = Math.hypot(ball.dx, ball.dy);
   ball.dx = (ball.dx / mag) * ball.speed;
   ball.dy = (ball.dy / mag) * ball.speed;
@@ -440,6 +442,7 @@ if (form) {
   //localStorage.removeItem('scores');
   //renderScoreTable();  guardadito,
 }
+
 
 
 
