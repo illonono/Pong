@@ -75,8 +75,8 @@ const paddleHeight = 80;
 const paddleWidth = 10;
 
 // objetos
-const player = { x: 0, y: 0, w: paddleWidth, h: paddleHeight, dy: 8, score: 0 };
-const ai =     { x: 0, y: 0, w: paddleWidth, h: paddleHeight, dy: 6, score: 0 }; // ai.dy es su velocidad de desplazamiento
+const player = { x: 0, y: 0, w: paddleWidth, h: paddleHeight, dy: 8, vy: 0, score: 0 };
+const ai =     { x: 0, y: 0, w: paddleWidth, h: paddleHeight, dy: 6, vy: 0, score: 0 }; // ai.dy es su velocidad de desplazamiento
 const ball =   { x: 0, y: 0, r: 7, speed: 4, dx: 4, dy: 3 };
 
 resizeCanvas(); // inicial
@@ -416,6 +416,7 @@ if (form) {
   //localStorage.removeItem('scores');
   //renderScoreTable();  guardadito,
 }
+
 
 
 
